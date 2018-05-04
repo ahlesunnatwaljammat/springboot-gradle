@@ -1,0 +1,67 @@
+buildscript {
+	ext {
+		springBootVersion = '2.0.1.RELEASE'
+	}
+	repositories {
+		mavenCentral()
+	}
+	dependencies {
+		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+	}
+}
+
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
+
+group = 'edu.learn'
+version = '0.0.1'
+sourceCompatibility = 1.8
+
+repositories {
+	mavenCentral()
+}
+
+
+dependencies {
+	compile('org.springframework.boot:spring-boot-starter-data-mongodb-reactive')
+	compile('org.springframework.boot:spring-boot-starter-webflux')
+	compile('org.projectlombok:lombok')
+	compile('de.flapdoodle.embed:de.flapdoodle.embed.mongo')
+    compile('org.jsoup:jsoup:1.11.3')
+
+	testCompile('org.springframework.boot:spring-boot-starter-test')
+	testCompile('io.projectreactor:reactor-test')
+}
+
+//create a single Jar with all dependencies
+task fatJar(type: Jar) {
+    manifest {
+        attributes 'Implementation-Title': 'Gradle Jar File Example',
+            'Implementation-Version': version,
+            'Main-Class': 'edu.learn.bootgradle.PostData'
+    }
+
+    baseName = project.name + '-all'
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}
+
+/**
+ * Enabling jar task to create a jar without including the dependencies
+ */
+jar {
+    enabled = true
+}
+
+/**
+ * If application have multiple Main classes then you can specify the your desired main class
+ */
+bootJar {
+    mainClassName = 'edu.learn.bootgradle.BootGradleApp'
+}
+
+task myTask() {
+    dependsOn 'build'
+}
