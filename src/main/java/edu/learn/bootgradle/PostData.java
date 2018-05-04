@@ -38,7 +38,7 @@ public class PostData {
         }
 
         for(String ticker : tickers){
-           postData.cusip(ticker.trim().toUpperCase());
+           postData.cusip(ticker.trim().toUpperCase(), outputFile);
         }
 
 
@@ -63,7 +63,7 @@ public class PostData {
         }*/
     }
 
-    public void cusip(String ticker) throws IOException {
+    public void cusip(String ticker, String outputFile) throws IOException {
 
         String urlParameters  = "tickersymbol="+ticker+"&sopt=symbol";
         byte[] postData = urlParameters.getBytes( StandardCharsets.UTF_8 );
@@ -88,14 +88,14 @@ public class PostData {
             html.append(readResult.nextLine());
         }
 
-        extractCusip(ticker, html);
+        extractCusip(ticker, html, outputFile);
     }
 
-    private void extractCusip(String ticker, StringBuffer html) throws IOException {
+    private void extractCusip(String ticker, StringBuffer html, String outputFile) throws IOException {
         Document doc = Jsoup.parse(html.toString());
         Elements findTableWithBgColor = doc.select("table[bgcolor='#DCFDD7']");
         Element findCusipSection = findTableWithBgColor.select("font[size='-1']").first();
-        Path cusipFile = Paths.get("D:/cusip.txt");
+        Path cusipFile = Paths.get(outputFile);
 
         if(findCusipSection == null){
             String tickerWithCusip = ticker + ",No cusip found\n";

@@ -43,7 +43,8 @@ task fatJar(type: Jar) {
             'Main-Class': 'edu.learn.bootgradle.PostData'
     }
 
-    baseName = project.name + '-all'
+    //baseName = project.name + '-all'
+    baseName = 'ticker-cusip-extractor'
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
     with jar
 }
